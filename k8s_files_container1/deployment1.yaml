@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-container1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-container1
+  template:
+    metadata:
+      labels:
+        app: k8s-container1
+    spec:
+      containers:
+      - name: k8s-container1
+        image: us-central1-docker.pkg.dev/csci5409-454408/k8s-container1/container1:latest
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: shared-storage
+          mountPath: "/SakthiSharan_PV_dir"  
+
+      tolerations:
+      - key: "node.kubernetes.io/disk-pressure"
+        operator: "Exists"
+        effect: "NoSchedule"
+
+      volumes:
+      - name: shared-storage
+        persistentVolumeClaim: 
+          claimName: shared-disk  

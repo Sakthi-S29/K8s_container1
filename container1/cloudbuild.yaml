@@ -1,0 +1,53 @@
+steps:
+  # Step 1: Build the JAR file using Maven
+  - name: 'maven:3.9.9'
+    id: 'Build JAR'
+    args: ['package']
+    dir: 'container1'  # Path to the Java project
+
+  # Step 2: Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Build Docker Image'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/csci5409-454408/k8s-container1/container1:latest', '.']
+    dir: 'container1'  # Path to the Dockerfile
+
+  # Step 3: Push the Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Push Docker Image'
+    args: ['push', 'us-central1-docker.pkg.dev/csci5409-454408/k8s-container1/container1:latest']
+
+  # Step 4: Apply PersistentVolume (PV)
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: 'Apply PV'
+    args: ['apply', '-f', '../k8s_files_container1/pv.yaml']
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=k8s-cluster'
+
+  # Step 5: Apply PersistentVolumeClaim (PVC)
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: 'Apply PVC'
+    args: ['apply', '-f', '../k8s_files_container1/pvc.yaml']
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=k8s-cluster'
+
+  # Step 6: Apply Deployment for Container 1
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: 'Deploy Container 1'
+    args: ['apply', '-f', '../k8s_files_container1/deployment1.yaml']
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=k8s-cluster'
+
+  # Step 7: Apply Service for Container 1
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: 'Expose Container 1'
+    args: ['apply', '-f', '../k8s_files_container1/service1.yaml']
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=k8s-cluster'
+
+# Specify the Artifact Registry as the destination for the Docker image
+images:
+  - 'us-central1-docker.pkg.dev/csci5409-454408/k8s-container1/container1:latest'
