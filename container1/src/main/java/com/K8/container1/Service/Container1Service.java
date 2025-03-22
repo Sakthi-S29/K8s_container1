@@ -77,7 +77,7 @@ public class Container1Service {
             response.put("file",null);
             response.put("error","Invalid JSON input.");
         }
-        else if(fileName.isEmpty()||fileName==null){
+        else if(fileName.isEmpty()){
             response.put("file",null);
             response.put("error","Invalid JSON input.");
         }
@@ -85,11 +85,11 @@ public class Container1Service {
             String container2Url = "http://k8s-container2-service:8081/calculate";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            Map<String, String> requestBody = new HashMap<>();
+            Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("file", fileName);
             requestBody.put("product", product);
 
-            HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
+            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
             try {
                 ResponseEntity<Map> container2Response = restTemplate.exchange(
@@ -101,7 +101,6 @@ public class Container1Service {
 
                 response = container2Response.getBody();
             } catch (Exception e) {
-                System.err.println("Error while calling Container 2: " + e.getMessage());
                 response.put("error", "Error while communicating with Container 2.");
                 return response;
             }
