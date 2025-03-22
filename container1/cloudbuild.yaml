@@ -19,7 +19,7 @@ steps:
   # Step 4: Apply PersistentVolume (PV)
   - name: 'gcr.io/cloud-builders/kubectl'
     id: 'Apply PV'
-    args: ['apply', '-f', '../k8s_files_container1/pv.yaml']
+    args: ['apply', '-f', 'pv.yaml']
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
       - 'CLOUDSDK_CONTAINER_CLUSTER=k8s-cluster'
@@ -27,7 +27,7 @@ steps:
   # Step 5: Apply PersistentVolumeClaim (PVC)
   - name: 'gcr.io/cloud-builders/kubectl'
     id: 'Apply PVC'
-    args: ['apply', '-f', '../k8s_files_container1/pvc.yaml']
+    args: ['apply', '-f', 'pvc.yaml']
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
       - 'CLOUDSDK_CONTAINER_CLUSTER=k8s-cluster'
@@ -35,7 +35,7 @@ steps:
   # Step 6: Apply Deployment for Container 1
   - name: 'gcr.io/cloud-builders/kubectl'
     id: 'Deploy Container 1'
-    args: ['apply', '-f', '../k8s_files_container1/deployment1.yaml']
+    args: ['apply', '-f', 'deployment1.yaml']
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
       - 'CLOUDSDK_CONTAINER_CLUSTER=k8s-cluster'
@@ -43,7 +43,7 @@ steps:
   # Step 7: Apply Service for Container 1
   - name: 'gcr.io/cloud-builders/kubectl'
     id: 'Expose Container 1'
-    args: ['apply', '-f', '../k8s_files_container1/service1.yaml']
+    args: ['apply', '-f', 'service1.yaml']
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
       - 'CLOUDSDK_CONTAINER_CLUSTER=k8s-cluster'
