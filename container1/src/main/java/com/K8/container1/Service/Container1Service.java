@@ -27,12 +27,20 @@ public class Container1Service {
     public Map<String, Object> validateFile(File_details fileDetails){
         String fileName = fileDetails.getFile();
         String data = fileDetails.getData();
-        if(fileName.isEmpty()||fileName==null){
+
+        if(fileDetails.getFile()==null){
             Map<String, Object> noFileName = new HashMap<>();
             noFileName.put("file",null);
             noFileName.put("error","Invalid JSON input.");
             return noFileName;
         }
+        else if(fileName.isEmpty()){
+            Map<String, Object> noFileName = new HashMap<>();
+            noFileName.put("file",null);
+            noFileName.put("error","Invalid JSON input.");
+            return noFileName;
+        }
+        else{
 
         Boolean isFileCreated = createFile(fileName,data);
         Map<String, Object> noFile = new HashMap<>();
@@ -47,6 +55,7 @@ public class Container1Service {
             return noFile;
         }
     }
+}
 
     public Boolean createFile(String fileName, String data) {
         try {
@@ -58,12 +67,17 @@ public class Container1Service {
             }
     }
 
+
     public Map<String,Object> forwardToContainer2(File_Product fileProduct){
         String fileName = fileProduct.getFile();
         String product = fileProduct.getProduct();
         Map<String,Object> response = new HashMap<>();
 
-        if(fileName.isEmpty()||fileName==null){
+        if(fileProduct.getFile()==null){
+            response.put("file",null);
+            response.put("error","Invalid JSON input.");
+        }
+        else if(fileName.isEmpty()||fileName==null){
             response.put("file",null);
             response.put("error","Invalid JSON input.");
         }
