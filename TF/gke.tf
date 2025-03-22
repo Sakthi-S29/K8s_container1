@@ -7,7 +7,7 @@ provider "google" {
 resource "google_container_cluster" "primary" {
   name     = "k8s-cluster"
   location = "us-central1-c"  # Zone for the GKE cluster
-
+  deletion_protection = false
   remove_default_node_pool = true
   initial_node_count       = 1
 
