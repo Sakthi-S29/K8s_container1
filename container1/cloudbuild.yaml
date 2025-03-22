@@ -2,19 +2,19 @@ steps:
   # Step 1: Build the JAR file using Maven
   - name: 'maven:3.9.9'
     id: 'Build JAR'
-    args: ['mvn','package']
+    args: ['mvn', 'package']
     dir: 'container1'  # Path to the Java project
 
   # Step 2: Build the Docker image
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Build Docker Image'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/csci5409-454408/k8s-container1/container1:latest', '.']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/csci5409-454408/k8s-container1/container1:${SHORT_SHA}', '.']
     dir: 'container1'  # Path to the Dockerfile
 
   # Step 3: Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Push Docker Image'
-    args: ['push', 'us-central1-docker.pkg.dev/csci5409-454408/k8s-container1/container1:latest']
+    args: ['push', 'us-central1-docker.pkg.dev/csci5409-454408/k8s-container1/container1:${SHORT_SHA}']
 
   # Step 4: Apply PersistentVolume (PV)
   - name: 'gcr.io/cloud-builders/kubectl'
@@ -34,14 +34,20 @@ steps:
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
       - 'CLOUDSDK_CONTAINER_CLUSTER=k8s-cluster'
 
-  # Step 6: Apply Deployment for Container 1
+  # Step 6: Update Deployment YAML with the new image tag
   - name: 'gcr.io/cloud-builders/kubectl'
-    id: 'Deploy Container 1'
+    id: 'Update Deployment YAML'
     args: ['apply', '-f', 'deployment1.yaml']
     dir: 'container1'
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
       - 'CLOUDSDK_CONTAINER_CLUSTER=k8s-cluster'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        sed -i "s|us-central1-docker.pkg.dev/csci5409-454408/k8s-container1/container1:.*|us-central1-docker.pkg.dev/csci5409-454408/k8s-container1/container1:${SHORT_SHA}|g" deployment1.yaml
+        kubectl apply -f deployment1.yaml
 
   # Step 7: Apply Service for Container 1
   - name: 'gcr.io/cloud-builders/kubectl'
@@ -52,8 +58,17 @@ steps:
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
       - 'CLOUDSDK_CONTAINER_CLUSTER=k8s-cluster'
 
+  # Step 8: Force a Rollout Restart
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: 'Rollout Restart'
+    args: ['rollout', 'restart', 'deployment/k8s-container1']
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=k8s-cluster'
+
 options:
   logging: CLOUD_LOGGING_ONLY
+
 # Specify the Artifact Registry as the destination for the Docker image
 images:
-  - 'us-central1-docker.pkg.dev/csci5409-454408/k8s-container1/container1:latest'
+  - 'us-central1-docker.pkg.dev/csci5409-454408/k8s-container1/container1:${SHORT_SHA}'
