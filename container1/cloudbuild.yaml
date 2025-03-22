@@ -48,6 +48,8 @@ steps:
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
       - 'CLOUDSDK_CONTAINER_CLUSTER=k8s-cluster'
 
+options:
+  logging: CLOUD_LOGGING_ONLY
 # Specify the Artifact Registry as the destination for the Docker image
 images:
   - 'us-central1-docker.pkg.dev/csci5409-454408/k8s-container1/container1:latest'
