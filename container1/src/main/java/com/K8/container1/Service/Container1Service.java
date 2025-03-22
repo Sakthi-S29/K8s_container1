@@ -27,7 +27,7 @@ public class Container1Service {
     public Map<String, Object> validateFile(File_details fileDetails){
         String fileName = fileDetails.getFile();
         String data = fileDetails.getData();
-        if(fileName.isEmpty()){
+        if(fileName.isEmpty()||fileName==null){
             Map<String, Object> noFileName = new HashMap<>();
             noFileName.put("file",null);
             noFileName.put("error","Invalid JSON input.");
@@ -63,7 +63,7 @@ public class Container1Service {
         String product = fileProduct.getProduct();
         Map<String,Object> response = new HashMap<>();
 
-        if(fileName.isEmpty()){
+        if(fileName.isEmpty()||fileName==null){
             response.put("file",null);
             response.put("error","Invalid JSON input.");
         }
