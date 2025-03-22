@@ -20,6 +20,7 @@ steps:
   - name: 'gcr.io/cloud-builders/kubectl'
     id: 'Apply PV'
     args: ['apply', '-f', 'pv.yaml']
+    dir: 'container1'
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
       - 'CLOUDSDK_CONTAINER_CLUSTER=k8s-cluster'
@@ -28,6 +29,7 @@ steps:
   - name: 'gcr.io/cloud-builders/kubectl'
     id: 'Apply PVC'
     args: ['apply', '-f', 'pvc.yaml']
+    dir: 'container1'
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
       - 'CLOUDSDK_CONTAINER_CLUSTER=k8s-cluster'
@@ -36,6 +38,7 @@ steps:
   - name: 'gcr.io/cloud-builders/kubectl'
     id: 'Deploy Container 1'
     args: ['apply', '-f', 'deployment1.yaml']
+    dir: 'container1'
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
       - 'CLOUDSDK_CONTAINER_CLUSTER=k8s-cluster'
@@ -44,6 +47,7 @@ steps:
   - name: 'gcr.io/cloud-builders/kubectl'
     id: 'Expose Container 1'
     args: ['apply', '-f', 'service1.yaml']
+    dir: 'container1'
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
       - 'CLOUDSDK_CONTAINER_CLUSTER=k8s-cluster'
