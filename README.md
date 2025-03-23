@@ -1,8 +1,3 @@
-Got it! Since your **deployment file** will look for images in the **Google Artifact Registry (GAR)**, I’ll update the README files to reflect this. Specifically, I’ll ensure that the Docker images are built and pushed to the GAR, and the Kubernetes deployment files are configured to pull images from the GAR.
-
-Here’s the updated README for both repositories with this in mind:
-
----
 
 ## **README for Container 1 Repository**
 
